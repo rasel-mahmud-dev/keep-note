@@ -118,17 +118,16 @@ class NoteDatabaseHelper(context: Context) :
         return note
     }
 
-
     fun updateNote(note: Note): Int {
         val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_TITLE, note.title)
             put(COLUMN_CONTENT, note.content)
+            put(COLUMN_CREATED_DATE, note.createdAt)
             put(COLUMN_UPDATED_DATE, note.updatedAt)
+            put(COLUMN_DEVICE_ID, note.deviceId)
         }
-        val whereClause = "$COLUMN_ID = ?"
-        val whereArgs = arrayOf(note.id.toString())
-        return db.update(TABLE_NAME, values, whereClause, whereArgs)
+        return db.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(note.id))
     }
 
     fun deleteNote(noteId: Long): Int {

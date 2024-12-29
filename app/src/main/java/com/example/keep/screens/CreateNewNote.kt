@@ -62,32 +62,43 @@ fun CreateNewNote(
     }
 
     fun saveNote() {
-
         if (title.text.isNotBlank() || content.text.isNotBlank()) {
-            val id = getAndroidDeviceId(context);
-
+            val dbHelper = NoteDatabaseHelper(context)
             val currentDate =
                 SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-            val newNote = Note(
-                title = title.text,
-                content = content.text,
-                createdAt = currentDate,
-                updatedAt = currentDate,
-                id = null,
-                deviceId = id
-            )
 
-            val dbHelper = NoteDatabaseHelper(context)
+            if (updatedItem == null) {
+                val newNote = Note(
+                    title = title.text,
+                    content = content.text,
+                    createdAt = currentDate,
+                    updatedAt = currentDate,
+                    id = null,
+                    deviceId = getAndroidDeviceId(context)
+                )
 
-            val noteId = dbHelper.insertNote(newNote)
-            if (noteId != -1L) {
-                Log.d("NoteSaved", "Note saved successfully with ID: $noteId")
+                val noteId = dbHelper.insertNote(newNote)
+                if (noteId != -1L) {
+                    Log.d("NoteSaved", "Note saved successfully with ID: $noteId")
+                } else {
+                    Log.e("NoteSaveError", "Failed to save the note")
+                }
             } else {
-                Log.e("NoteSaveError", "Failed to save the note")
+                val updatedNote = updatedItem!!.copy(
+                    title = title.text,
+                    content = content.text,
+                    updatedAt = currentDate
+                )
+                val rowsAffected = dbHelper.updateNote(updatedNote)
+                if (rowsAffected > 0) {
+                    Log.d("NoteUpdated", "Note updated successfully")
+                } else {
+                    Log.e("NoteUpdateError", "Failed to update the note")
+                }
             }
-
         }
     }
+
 
     LaunchedEffect(noteId) {
         if (noteId != null) {
