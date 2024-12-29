@@ -19,7 +19,6 @@ import com.example.keep.components.EditableNote
 import com.example.keep.models.Note
 import com.example.keep.store.NoteDatabaseHelper
 import com.example.keep.utils.getAndroidDeviceId
-import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -99,7 +98,6 @@ fun CreateNewNote(
         }
     }
 
-
     LaunchedEffect(noteId) {
         if (noteId != null) {
             val db = NoteDatabaseHelper(context)
@@ -108,7 +106,11 @@ fun CreateNewNote(
                 updatedItem = item
                 title = TextFieldValue(item.title)
                 content = TextFieldValue(item.content)
+            } else{
+                updatedItem = null
             }
+        } else {
+            updatedItem = null
         }
     }
 

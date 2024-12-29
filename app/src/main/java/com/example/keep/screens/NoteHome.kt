@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,7 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.keep.components.NoteCard
+import com.example.keep.components.NoteSearchBar
 import com.example.keep.models.Note
 import com.example.keep.store.NoteDatabaseHelper
 
@@ -40,14 +42,27 @@ fun NoteHome(context: Context, navHostController: NavHostController) {
         modifier = Modifier.fillMaxSize()
     ) {
 
-
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(0.dp, 0.dp, 0.dp, 0.dp),
             contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)    // Vertical spacing between items
+
         ) {
+
+            item(span = { GridItemSpan(2) }) {
+                Box(modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 0.dp)) {
+                    NoteSearchBar(
+                        onSearchTextChange = {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp)
+                    )
+                }
+            }
+
             items(notes) { note ->
                 NoteCard(note = note, onClick = {
                     navHostController.navigate("edit/${note.id.toString()}")
