@@ -17,7 +17,8 @@ const val COLUMN_CREATED_DATE = "created_at"
 const val COLUMN_UPDATED_DATE = "updated_at"
 const val COLUMN_DEVICE_ID = "device_id"
 
-class NoteDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class NoteDatabaseHelper(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTableQuery = """
@@ -79,6 +80,44 @@ class NoteDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_
         cursor.close()
         return notes
     }
+
+    fun getById(id: String): Note? {
+        val db = readableDatabase
+        val cursor: Cursor = db.query(
+            TABLE_NAME,
+            null, // Select all columns
+            "$COLUMN_ID = ?", // WHERE clause to filter by id
+            arrayOf(id), // The ID value to filter by
+            null, // No GROUP BY
+            null, // No HAVING
+            null // No ORDER BY
+        )
+
+        var note: Note? = null
+
+        with(cursor) {
+            if (moveToFirst()) {
+                val id = getLong(getColumnIndexOrThrow(COLUMN_ID))
+                val title = getString(getColumnIndexOrThrow(COLUMN_TITLE))
+                val content = getString(getColumnIndexOrThrow(COLUMN_CONTENT))
+                val createdAt = getString(getColumnIndexOrThrow(COLUMN_CREATED_DATE))
+                val updatedAt = getString(getColumnIndexOrThrow(COLUMN_UPDATED_DATE))
+                val deviceId = getString(getColumnIndexOrThrow(COLUMN_DEVICE_ID))
+
+                note = Note(
+                    title = title,
+                    content = content,
+                    createdAt = createdAt,
+                    updatedAt = updatedAt,
+                    id = id.toString(),
+                    deviceId = deviceId
+                )
+            }
+        }
+        cursor.close()
+        return note
+    }
+
 
     fun updateNote(note: Note): Int {
         val db = writableDatabase

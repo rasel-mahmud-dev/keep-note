@@ -26,13 +26,17 @@ import java.util.*
 @Composable
 fun CreateNewNote(
     context: Context,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    noteId: String? = null
 ) {
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycle = lifecycleOwner.lifecycle
 
-    var isCreating by remember { mutableStateOf(false) }
+
+    Log.d("noteIdnoteId", noteId.toString())
+
+    var updatedItem by remember { mutableStateOf<Note?>(null) }
     var title by remember { mutableStateOf(TextFieldValue("Test Title")) }
     var content by remember {
         mutableStateOf(
@@ -58,6 +62,7 @@ fun CreateNewNote(
     }
 
     fun saveNote() {
+
         if (title.text.isNotBlank() || content.text.isNotBlank()) {
             val id = getAndroidDeviceId(context);
 
@@ -84,16 +89,22 @@ fun CreateNewNote(
         }
     }
 
-    LaunchedEffect(title.text, content.text) {
-        delay(3000)
-        if (title.text.isNotBlank() || content.text.isNotBlank()) {
-            saveNote()
+    LaunchedEffect(noteId) {
+        if (noteId != null) {
+            val db = NoteDatabaseHelper(context)
+            val item = db.getById(noteId)
+            if (item !== null) {
+                updatedItem = item
+                title = TextFieldValue(item.title)
+                content = TextFieldValue(item.content)
+            }
         }
     }
 
     BackHandler {
         saveNote()
         navHostController.popBackStack()
+        updatedItem = null
     }
 
     LaunchedEffect(lifecycle.currentState) {

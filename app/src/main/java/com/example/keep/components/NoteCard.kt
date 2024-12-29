@@ -2,6 +2,7 @@ package com.example.keep.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -16,8 +17,7 @@ import com.example.keep.models.Note
 import com.example.keep.theme.AppColors
 
 @Composable
-fun NoteCard(note: Note) {
-
+fun NoteCard(note: Note, onClick: (Note) -> Unit) {
     val lineCount = note.content.split("\n").size
     val cardHeight = when {
         lineCount <= 10 -> 100.dp
@@ -29,7 +29,10 @@ fun NoteCard(note: Note) {
         modifier = Modifier
             .fillMaxWidth()
             .height(cardHeight)
-            .border(1.dp, color = AppColors.Gray40, shape = RoundedCornerShape(12.dp)),
+            .border(1.dp, color = AppColors.Gray40, shape = RoundedCornerShape(12.dp))
+            .clickable {
+                onClick(note)
+            },
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(0.dp)
     ) {

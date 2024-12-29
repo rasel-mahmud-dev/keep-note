@@ -3,16 +3,13 @@ package com.example.keep.screens
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,19 +39,22 @@ fun NoteHome(context: Context, navHostController: NavHostController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(2.dp),
-            contentPadding = PaddingValues(0.dp)
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)    // Vertical spacing between items
         ) {
-            items(notes) { item ->
-                NoteCard(note = item)
+            items(notes) { note ->
+                NoteCard(note = note, onClick = {
+                    navHostController.navigate("edit/${note.id.toString()}")
+                })
             }
         }
 
-        // FloatingActionButton placed on top with zIndex
         FloatingActionButton(
             onClick = { navHostController.navigate("create") },
             modifier = Modifier

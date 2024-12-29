@@ -3,6 +3,7 @@ package com.example.keep.routes
 import CreateNewNote
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,9 +18,9 @@ fun Routes(context: Context) {
     val routes = listOf(
         Route(path = "home", content = { NoteHome(context, navController) }),
         Route(path = "create", content = { CreateNewNote(context, navController) }),
-        Route(path = "appDetails/{appName}", content = { backStackEntry ->
-            val appName = backStackEntry.arguments?.getString("appName")
-//            AppDetailsScreen(appName ?: "Unknown")
+        Route(path = "edit/{noteId}", content = { backStackEntry ->
+            val noteId = backStackEntry.arguments?.getString("noteId")
+            CreateNewNote(LocalContext.current, navController, noteId)
         })
     )
 
