@@ -1,43 +1,92 @@
-package com.example.keep.screens
-
 import android.content.Context
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.compose.foundation.layout.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavHostController
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.compose.rememberNavController
 import com.example.keep.components.CreateNewNote.CreateNoteBottomBar
 import com.example.keep.components.CreateNewNote.Header
 import com.example.keep.components.EditableNote
+import com.example.keep.models.Note
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 @Composable
-fun CreateNewNote(context: Context, navHostController: NavHostController) {
+fun CreateNewNote(
+    context: Context,
+    navHostController: NavHostController
+) {
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycle = lifecycleOwner.lifecycle
 
     var isCreating by remember { mutableStateOf(false) }
-    var title by remember { mutableStateOf(TextFieldValue("")) }
-    var content by remember { mutableStateOf(TextFieldValue("")) }
+    var title by remember { mutableStateOf(TextFieldValue("Test Title")) }
+    var content by remember {
+        mutableStateOf(
+            TextFieldValue(
+                "*.iml\n" +
+                        ".gradle\n" +
+                        "/local.properties\n" +
+                        "/.idea/caches\n" +
+                        "/.idea/libraries\n" +
+                        "/.idea/modules.xml\n" +
+                        "/.idea/workspace.xml\n" +
+                        "/.idea/navEditor.xml\n" +
+                        "/.idea/assetWizardSettings.xml\n" +
+                        ".DS_Store\n" +
+                        "/build\n" +
+                        "/captures\n" +
+                        ".externalNativeBuild\n" +
+                        ".cxx\n" +
+                        "local.properties\n" +
+                        "node\n"
+            )
+        )
+    }
 
-    fun createNote() {
+    fun saveNote() {
         if (title.text.isNotBlank() || content.text.isNotBlank()) {
             val currentDate =
                 SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-//            notes.add(Note(title.text, content.text, currentDate))
+            val newNote = Note(title.text, content.text, currentDate)
             title = TextFieldValue("")
             content = TextFieldValue("")
             isCreating = false
+
+            Log.d("newNote", newNote.toString())
         }
     }
+
+    LaunchedEffect(title.text, content.text) {
+        delay(3000)
+        if (title.text.isNotBlank() || content.text.isNotBlank()) {
+            saveNote()
+        }
+    }
+
+    BackHandler {
+        saveNote()
+        navHostController.popBackStack()
+    }
+
+    LaunchedEffect(lifecycle.currentState) {
+        Log.d("lifecycle.currentStat", lifecycle.currentState.toString())
+        if (lifecycle.currentState == Lifecycle.State.CREATED) {
+            saveNote()
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -56,6 +105,10 @@ fun CreateNewNote(context: Context, navHostController: NavHostController) {
 
         CreateNoteBottomBar(navHostController)
     }
+}
 
-
+@Preview(showBackground = true)
+@Composable
+fun PreviewCreateNewNote() {
+    CreateNewNote(context = LocalContext.current, navHostController = rememberNavController())
 }

@@ -1,12 +1,12 @@
 package com.example.keep.routes
 
+import CreateNewNote
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.keep.models.Route
-import com.example.keep.screens.CreateNewNote
 import com.example.keep.screens.NoteHome
 
 
