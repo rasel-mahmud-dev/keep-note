@@ -72,6 +72,4 @@ Keep is a note-taking app focused on data security, with no reliance on the inte
 
 ---
 
-# NOTE: This app is under construction emoji speeshless 
-
- 
+# NOTE: This app is under construction  😐
