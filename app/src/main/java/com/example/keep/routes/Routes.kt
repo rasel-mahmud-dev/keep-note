@@ -25,7 +25,7 @@ fun Routes(context: Context) {
 
     NavHost(
         navController = navController,
-        startDestination = "create"
+        startDestination = "home"
     ) {
         routes.forEach { route ->
             composable(route.path) {

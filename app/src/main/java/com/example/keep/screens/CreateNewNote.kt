@@ -17,6 +17,7 @@ import com.example.keep.components.CreateNewNote.CreateNoteBottomBar
 import com.example.keep.components.CreateNewNote.Header
 import com.example.keep.components.EditableNote
 import com.example.keep.models.Note
+import com.example.keep.store.NoteDatabaseHelper
 import com.example.keep.utils.getAndroidDeviceId
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
@@ -59,14 +60,27 @@ fun CreateNewNote(
     fun saveNote() {
         if (title.text.isNotBlank() || content.text.isNotBlank()) {
             val id = getAndroidDeviceId(context);
+
             val currentDate =
                 SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-            val newNote = Note(title.text, content.text, currentDate, id)
-            title = TextFieldValue("")
-            content = TextFieldValue("")
-            isCreating = false
+            val newNote = Note(
+                title = title.text,
+                content = content.text,
+                createdAt = currentDate,
+                updatedAt = currentDate,
+                id = null,
+                deviceId = id
+            )
 
-            Log.d("newNote", newNote.toString())
+            val dbHelper = NoteDatabaseHelper(context)
+
+            val noteId = dbHelper.insertNote(newNote)
+            if (noteId != -1L) {
+                Log.d("NoteSaved", "Note saved successfully with ID: $noteId")
+            } else {
+                Log.e("NoteSaveError", "Failed to save the note")
+            }
+
         }
     }
 

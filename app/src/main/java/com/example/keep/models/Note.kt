@@ -4,5 +4,7 @@ data class Note(
     val title: String,
     val content: String,
     val createdAt: String,
-    val id: String
+    val updatedAt: String,
+    val id: String?,
+    val deviceId: String
 )
