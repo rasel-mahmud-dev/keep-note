@@ -17,8 +17,7 @@ const val COLUMN_CREATED_DATE = "created_at"
 const val COLUMN_UPDATED_DATE = "updated_at"
 const val COLUMN_DEVICE_ID = "device_id"
 
-class NoteDatabaseHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class NoteDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTableQuery = """
@@ -79,5 +78,24 @@ class NoteDatabaseHelper(context: Context) :
         }
         cursor.close()
         return notes
+    }
+
+    fun updateNote(note: Note): Int {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_TITLE, note.title)
+            put(COLUMN_CONTENT, note.content)
+            put(COLUMN_UPDATED_DATE, note.updatedAt)
+        }
+        val whereClause = "$COLUMN_ID = ?"
+        val whereArgs = arrayOf(note.id.toString())
+        return db.update(TABLE_NAME, values, whereClause, whereArgs)
+    }
+
+    fun deleteNote(noteId: Long): Int {
+        val db = writableDatabase
+        val whereClause = "$COLUMN_ID = ?"
+        val whereArgs = arrayOf(noteId.toString())
+        return db.delete(TABLE_NAME, whereClause, whereArgs)
     }
 }

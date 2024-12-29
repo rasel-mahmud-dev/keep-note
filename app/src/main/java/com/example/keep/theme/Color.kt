@@ -12,5 +12,6 @@ data object  AppColors {
     val PurpleGrey40: Color = Color(0xFF625b71)
     val Pink40: Color = Color(0xFF7D5260)
     val Gray40: Color = Color(0xFF989898)
+    val MainBg: Color = Color(0xFF131313)
     val Transparent: Color = Color(0x00FFFFFF)
 }
