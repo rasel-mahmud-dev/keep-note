@@ -49,6 +49,7 @@ fun NoteHome(context: Context, navHostController: NavHostController) {
                 .padding(0.dp, 0.dp, 0.dp, 0.dp),
             contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
 
         ) {
 
@@ -58,7 +59,6 @@ fun NoteHome(context: Context, navHostController: NavHostController) {
                         onSearchTextChange = {},
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 16.dp)
                     )
                 }
             }
